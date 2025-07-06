@@ -65,13 +65,15 @@ Build a **command-line expense tracker** that lets a user:
   * Calls your methods accordingly.
 
 8️⃣ **Project structure**
+
+```
 expense_tracker/
 ├── pyproject.toml (or requirements.txt)
 ├── .gitignore
 ├── README.md
 ├── src/
 │   └── expense_tracker/
-│       ├── **init**.py
+│       ├── __init__.py
 │       ├── manager.py
 │       └── models.py
 ├── tests/
