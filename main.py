@@ -1,43 +1,58 @@
 from src.expense import Expense
 import src.categories
-import csv
+from src.expense_manager import ExpenseManager
 
 def main():
-    # Prompts user to select an option and catches any errors
     while True:
-        try: 
-            option = int(input("Select a number: \n1) Add an expense \n2) See expenses per category \n3) See expenses by date range \n4) Edit Categories \n5) Quit \n"))
-            if option not in [1, 2, 3, 4, 5]:
-                raise ValueError
-            break
-        except ValueError:
-            print("\n**Please enter an integer from 1-4**\n")
+        option = get_user_option(
+            prompt="1) Add an expense \n2) See expenses per category \n3) See expenses by date range \n4) Edit categories \n5) Quit \n",
+            valid_options=[1,2,3,4,5])
+        if option == 1: option_1()
+        if option == 2: option_2()
+        # if option == 3: option_3()
+        if option == 4: option_4()
+        if option == 5: break
+        
 
-    #Prompts user to fill out expense fields and passes in valid categories
-    if option == 1:
-        valid_categories = src.categories.load_categories()
-        with open(src.expenses.csv, "a") as file:
-                file.write(Expense.get(valid_categories))
-    
-    # #Lists expenses of a given category
-    # if option == 2:
+def option_1():
+    manager = ExpenseManager()
+    while True:
+            manager.add_expense(Expense.get())
+            option_2 = get_user_option(
+            prompt="1) Add another expense \n2) Save expenses and quit",
+            valid_options=[1,2])
+            if option_2 ==2:
+                manager.save_to_file()
+                break
 
-    # #Lists expenses of a specified date range
-    # if option == 3:
+def option_2():
+    manager = ExpenseManager()
+    manager.load_from_file()
+    totals = manager.report_by_category()
+    for category, amount in totals.items():
+        print(f"{category}: ${amount:.2f}")
 
-    #Edit category sequence (view categories, add categories, remove categories)
-    if option == 4:
-        print("Here are your current categories:")
-        print(*src.categories.load_categories(), sep="\n")
+
+# def option_3():
+
+def option_4():
+    print("Here are your current categories:")
+    print(*src.categories.load_categories(), sep="\n")
+
+    option_3 = get_user_option(
+    prompt="1) Add a category \n2) Delete a category \n",
+    valid_options=[1,2])
+    if option_3 == 1: src.categories.add_category(input("New category: \n"))
+    if option_3 == 2: src.categories.delete_category(input("Category to delete: \n"))
+
+def get_user_option(prompt, valid_options):
+    while True:
         try:
-            option_2 = int(input("\nSelect a number: \n1) Add a category \n2) Delete a category \n"))
-            if option_2 not in [1, 2]: raise ValueError
+            option = int(input(prompt))
+            if option not in valid_options: raise ValueError
+            return option
         except ValueError:
-            print("\n**Please enter an integer from 1-2**")
-        if option_2 == 1: src.categories.add_category(input("Input new category: \n")) #Adds a new category
-        if option_2 == 2: src.categories.delete_category(input("Input the category you would like to delete: \n")) #Deletes an existing category
-
-
+            print(f"\n**Please enter an integer from {valid_options[0]}-{valid_options[-1]}**\n")
 
 
 if __name__ == "__main__":

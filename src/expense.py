@@ -1,8 +1,8 @@
 from dateutil.parser import parse
+from . import categories
 
 class Expense:
-    def __init__(self, amount, category, date, valid_categories):
-        self.valid_categories = valid_categories
+    def __init__(self, amount, category, date, ):
         self.amount = amount
         self.category = category
         self.date = date
@@ -11,8 +11,8 @@ class Expense:
         return f"Amount: {self.amount} /n Category: {self.category} /n Date: {self.date}"
 
     @classmethod
-    def get(cls, valid_categories):
-        return cls(input("Amount: "), input("Category: "), input("Date: "), valid_categories)
+    def get(cls):
+        return cls(input("Amount: "), input("Category: "), input("Date: "), )
 
     @property
     def amount(self):
@@ -34,7 +34,7 @@ class Expense:
     
     @category.setter
     def category(self, value):
-        if value not in self.valid_categories:
+        if value not in categories.load_categories():
             raise ValueError("Invalid category")
         self._category = value
 
@@ -49,3 +49,5 @@ class Expense:
             self._date = parsed_date
         except ValueError:
             raise ValueError("Could not parse date. Please try a different format.")
+
+
